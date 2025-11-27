@@ -9,7 +9,8 @@ Este projeto é uma aplicação Full Stack que utiliza Inteligência Artificial 
 
 ## 📸 Demonstração
 
-<img width="1079" height="1811" alt="screenshot" src="https://github.com/user-attachments/assets/be5f90a7-1ced-4e99-95a3-6cb96e3ef670" />
+<img width="1919" height="941" alt="image" src="https://github.com/user-attachments/assets/e06dc39f-1929-40d0-8a8a-1cd57b5938c7" />
+
 
 
 
