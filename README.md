@@ -42,14 +42,14 @@ Este projeto é uma aplicação Full Stack que utiliza Inteligência Artificial 
   
 ### 2. Crie e ative o ambiente virtual
 É recomendável usar um ambiente virtual para isolar as dependências.
-
+```bash
 **No Windows:**
 # Cria o ambiente usando Python 3.11
 py -3.11 -m venv venv
 
 # Ativa o ambiente
 .\venv\Scripts\activate
-
+```
 3. Instale as dependências
 Instale as versões exatas para evitar conflitos entre Numpy e TensorFlow.
 
