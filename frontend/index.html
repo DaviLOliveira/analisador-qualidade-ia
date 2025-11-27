@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teachable Machine - Davi</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh; /* Garante que o fundo cubra tudo */
+            margin: 0;
+            padding: 20px; /* Espaço para não colar nas bordas em telas pequenas */
+        }
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 400px; /* Largura máxima controlada */
+        }
+        h1 { color: #333; margin-bottom: 1rem; font-size: 1.5rem; }
+        
+        /* Estilo do Input de Arquivo */
+        input[type="file"] {
+            margin-bottom: 1rem;
+            width: 100%;
+        }
+
+        /* Botão */
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+            width: 100%;
+            font-weight: bold;
+        }
+        button:hover { background-color: #0056b3; }
+
+        /* Área do Preview da Imagem */
+        #imagePreview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none; /* Começa invisível */
+            border: 2px solid #ddd;
+            object-fit: contain;
+        }
+
+        /* Área de Resultado */
+        #result {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+            display: none;
+        }
+        .success { border-left: 5px solid #28a745; background-color: #d4edda; color: #155724; }
+        .danger { border-left: 5px solid #dc3545; background-color: #f8d7da; color: #721c24; }
+        
+        /* Loading */
+        .loading { color: #0056b3; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>🔍 Analisador de Qualidade</h1>
+        <p>Envie uma foto para detectar defeitos.</p>
+        
+        <input type="file" id="imageInput" accept="image/*">
+        
+        <img id="imagePreview" alt="Pré-visualização da imagem">
+
+        <br><br>
+        <button onclick="enviarImagem()">Analisar Agora</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const resultDiv = document.getElementById('result');
+
+        // --- LÓGICA DE PREVIEW (NOVO) ---
+        // Assim que o usuário escolhe um arquivo, mostramos ele na tela
+        fileInput.addEventListener('change', function() {
+            const file = this.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                
+                // Quando terminar de ler o arquivo...
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result; // Coloca a imagem no src
+                    imagePreview.style.display = 'block'; // Torna visível
+                }
+                
+                reader.readAsDataURL(file); // Lê o arquivo
+                
+                // Limpa resultado anterior se houver
+                resultDiv.style.display = 'none';
+            } else {
+                imagePreview.style.display = 'none';
+            }
+        });
+
+        // --- LÓGICA DE ENVIO (MANTIDA) ---
+        async function enviarImagem() {
+            if (fileInput.files.length === 0) {
+                alert("Por favor, selecione uma imagem primeiro!");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            // Interface de carregamento
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<span class="loading">⏳ Analisando IA...</span>';
+            resultDiv.className = ''; 
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/predict', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const data = await response.json();
+                const confianca = (data.confidence * 100).toFixed(1);
+                
+                // Lógica de cores
+                const resultado = data.class.toLowerCase();
+
+                if (resultado.includes("limpo") || resultado.includes("sem defeito") || resultado.includes("normal")) {
+                    resultDiv.className = 'success'; 
+                    resultDiv.innerHTML = `✅ <strong>Aprovado: ${data.class}</strong><br>Confiança: ${confianca}%`;
+                } else {
+                    resultDiv.className = 'danger'; 
+                    resultDiv.innerHTML = `⚠️ <strong>Defeito: ${data.class}</strong><br>Confiança: ${confianca}%`;
+                }
+
+            } catch (error) {
+                console.error(error);
+                resultDiv.innerHTML = '❌ Erro ao conectar com o servidor.';
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+0 Corrosão
+1 Manchas
+2 Fissuras
+3 Trincas
+4 Limpo
