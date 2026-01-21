@@ -95,7 +95,7 @@
         const imagePreview = document.getElementById('imagePreview');
         const resultDiv = document.getElementById('result');
 
-        // --- LÓGICA DE PREVIEW (NOVO) ---
+        // --- LÓGICA DE PREVIEW ---
         // Assim que o usuário escolhe um arquivo, mostramos ele na tela
         fileInput.addEventListener('change', function() {
             const file = this.files[0];
@@ -118,7 +118,7 @@
             }
         });
 
-        // --- LÓGICA DE ENVIO (MANTIDA) ---
+        // --- LÓGICA DE ENVIO ---
         async function enviarImagem() {
             if (fileInput.files.length === 0) {
                 alert("Por favor, selecione uma imagem primeiro!");
