@@ -4,7 +4,6 @@ from PIL import Image, ImageOps
 import io
 import numpy as np
 
-# Agora que alinhamos as versões (TF 2.15 + Keras 2.15), isso VAI funcionar
 from tensorflow.keras.models import load_model
 
 app = FastAPI()
